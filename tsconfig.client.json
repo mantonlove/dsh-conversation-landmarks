@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx"
+  },
+  "include": [
+    "src/client/**/*.ts",
+    "src/client/**/*.tsx",
+    "src/types.ts",
+    "tests/geometry.spec.ts",
+    "tests/navigation.spec.tsx"
+  ]
+}
