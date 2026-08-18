@@ -5,6 +5,7 @@ export const STYLES = `
 .dshcl-marker::before,.dshcl-marker::after{content:none!important}
 .dshcl-line{display:block;width:12px;height:2px;border-radius:2px;background:var(--dsw-alias-label-tertiary);transition:width 80ms ease,background-color 80ms ease}
 .dshcl-marker:hover,.dshcl-marker:focus,.dshcl-marker:focus-visible,.dshcl-marker[data-focused]{z-index:2;border:0!important;outline:none!important;background:transparent!important;box-shadow:none!important;filter:none!important}
+.dshcl-marker[data-proximity=near2] .dshcl-line{width:16px}
 .dshcl-marker[data-proximity=neighbor] .dshcl-line{width:20px}
 .dshcl-marker[data-proximity=selected] .dshcl-line{width:28px;background-color:#fff}
 .dshcl-preview{position:absolute;top:var(--dshcl-y);left:36px;z-index:3;width:min(280px,calc(100vw - 72px));padding:10px 12px;border:1px solid var(--dsw-alias-border-l2);border-radius:10px;background:var(--dsw-alias-bg-layer-3);box-shadow:none;transform:translateY(-50%);pointer-events:none}

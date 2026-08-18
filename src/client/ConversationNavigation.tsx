@@ -7,6 +7,10 @@ import { clamp, groupHeight, nearestPosition, ordinalPosition, RAIL_INSET } from
 
 const RAIL_LEFT = 6
 const TARGET_HIGHLIGHT_MS = 1_200
+/** Top clearance kept when a target is revealed, so the highlight outline above it stays visible. */
+const TARGET_HIGHLIGHT_CLEARANCE = 14
+/** Hide the rail until this many user tasks exist, so short chats stay clean. */
+const MIN_VISIBLE_LANDMARKS = 3
 
 interface NavigationProps {
   readonly sessionId: SessionId
@@ -78,6 +82,16 @@ function measure(landmarks: readonly ConversationLandmark[]): Measurement {
     height,
     positions,
   }
+}
+
+/** Marker size tier by distance from the focused landmark. */
+function proximityFor(focus: FocusPoint | null, index: number): 'selected' | 'neighbor' | 'near2' | undefined {
+  if (focus === null) return undefined
+  const distance = Math.abs(index - focus.index)
+  if (distance === 0) return 'selected'
+  if (distance === 1) return 'neighbor'
+  if (distance === 2) return 'near2'
+  return undefined
 }
 
 function markerStyle(y: number, positions: readonly number[] = [], index = 0): CSSProperties {
@@ -158,7 +172,7 @@ export function ConversationNavigation({ sessionId, sessions, t, useProjection }
     targetRef.current?.removeAttribute('data-dshcl-target')
   }, [])
 
-  if (landmarks.length === 0) return null
+  if (landmarks.length < MIN_VISIBLE_LANDMARKS) return null
 
   const focusFromPointer = (event: MouseEvent<HTMLDivElement>): void => {
     const rail = railRef.current
@@ -190,7 +204,7 @@ export function ConversationNavigation({ sessionId, sessions, t, useProjection }
       const rendered = await renderedAnchor(landmark.anchorKey)
       if (rendered === null) return
       const { anchor, scrollport } = rendered
-      scrollport.scrollTop += anchor.getBoundingClientRect().top - scrollport.getBoundingClientRect().top
+      scrollport.scrollTop += anchor.getBoundingClientRect().top - scrollport.getBoundingClientRect().top - TARGET_HIGHLIGHT_CLEARANCE
       targetRef.current?.removeAttribute('data-dshcl-target')
       if (targetTimerRef.current !== undefined) window.clearTimeout(targetTimerRef.current)
       anchor.setAttribute('data-dshcl-target', '')
@@ -230,13 +244,7 @@ export function ConversationNavigation({ sessionId, sessions, t, useProjection }
         {landmarks.map((landmark, index) => {
           const request = requestText(landmark, imageLabel, otherLabel)
           const y = measurement.positions[index] ?? ordinalPosition(index, landmarks.length, measurement.height)
-          const proximity = focus === null
-            ? undefined
-            : index === focus.index
-              ? 'selected'
-              : Math.abs(index - focus.index) === 1
-                ? 'neighbor'
-                : undefined
+          const proximity = proximityFor(focus, index)
           return (
             <button
               key={landmark.messageSeq}

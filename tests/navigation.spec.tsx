@@ -76,7 +76,52 @@ describe('ConversationNavigation', () => {
     expect(getByText('Second answer')).toBeTruthy()
   })
 
-  it('loads an older page and aligns the user message to the viewport top', async () => {
+  it('hides the rail until at least three user tasks exist', async () => {
+    mountScrollport()
+    const two = LANDMARKS.slice(0, 2) as unknown as ConversationLandmarkProjection
+    const view = render(
+      <ConversationNavigation
+        sessionId={'session-a' as SessionId}
+        sessions={{} as ISessions}
+        t={key => key}
+        useProjection={() => two}
+      />,
+    )
+    expect(view.container.querySelectorAll('.dshcl-marker')).toHaveLength(0)
+    view.rerender(
+      <ConversationNavigation
+        sessionId={'session-a' as SessionId}
+        sessions={{} as ISessions}
+        t={key => key}
+        useProjection={() => LANDMARKS}
+      />,
+    )
+    await waitFor(() => { expect(view.container.querySelectorAll('.dshcl-marker')).toHaveLength(3) })
+  })
+
+  it('tiers the two nearest markers on each side down toward the resting length', async () => {
+    mountScrollport()
+    const five = Array.from({ length: 5 }, (_, index) => ({
+      messageSeq: (index + 1) * 10,
+      anchorKey: `13:input-message-${String(index)}`,
+      request: { kind: 'text', text: `Task ${String(index)}` },
+    })) as unknown as ConversationLandmarkProjection
+    const { container } = render(
+      <ConversationNavigation
+        sessionId={'session-a' as SessionId}
+        sessions={{} as ISessions}
+        t={key => key}
+        useProjection={() => five}
+      />,
+    )
+    await waitFor(() => { expect(container.querySelectorAll('.dshcl-marker')).toHaveLength(5) })
+    const rail = container.querySelector<HTMLElement>('.dshcl-rail')!
+    fireEvent.mouseMove(rail, { clientY: 30 })
+    const markers = [...container.querySelectorAll<HTMLElement>('.dshcl-marker')]
+    expect(markers.map(marker => marker.dataset.proximity)).toEqual(['near2', 'neighbor', 'selected', 'neighbor', 'near2'])
+  })
+
+  it('loads an older page and reveals the user message with highlight clearance', async () => {
     const scrollport = mountScrollport()
     const loadOlder = vi.fn(async () => {
       loaded = true
@@ -111,6 +156,7 @@ describe('ConversationNavigation', () => {
 
     fireEvent.click(getByRole('button', { name: 'First user task' }))
     await waitFor(() => { expect(loadOlder).toHaveBeenCalledOnce() })
-    await waitFor(() => { expect(scrollport.scrollTop).toBe(160) })
+    // Row offset is 260 - 100 = 160; revealed 14px short so the highlight outline shows.
+    await waitFor(() => { expect(scrollport.scrollTop).toBe(146) })
   })
 })
