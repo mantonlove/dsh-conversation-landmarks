@@ -68,17 +68,17 @@ function measure(landmarks: readonly ConversationLandmark[]): Measurement {
       positions: landmarks.map((_landmark, index) => ordinalPosition(index, landmarks.length, height)),
     }
   }
-  const viewport = scrollport.getBoundingClientRect()
-  const composer = scrollport.querySelector<HTMLElement>('[data-composer-seat]')
-    ?? document.querySelector<HTMLElement>('[data-composer-seat]')
-  const composerTop = composer?.getBoundingClientRect().top
-  const bottom = composerTop === undefined ? viewport.bottom : Math.min(viewport.bottom, composerTop)
-  const availableHeight = Math.max(0, bottom - viewport.top)
-  const height = groupHeight(landmarks.length, availableHeight)
+  // Center the rail in the whole conversation column (header, transcript, and
+  // composer), so it never drifts toward the top when the composer is tall.
+  const column = scrollport.closest<HTMLElement>('[data-conversation-column]')
+    ?? scrollport.parentElement
+    ?? scrollport
+  const columnRect = column.getBoundingClientRect()
+  const height = groupHeight(landmarks.length, Math.max(0, columnRect.height))
   const positions = landmarks.map((_landmark, index) => ordinalPosition(index, landmarks.length, height))
   return {
-    left: viewport.left + RAIL_LEFT,
-    top: viewport.top + availableHeight / 2,
+    left: columnRect.left + RAIL_LEFT,
+    top: columnRect.top + columnRect.height / 2,
     height,
     positions,
   }

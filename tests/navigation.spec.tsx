@@ -41,10 +41,14 @@ function rect(top: number, bottom: number, width = 1000): DOMRect {
 }
 
 function mountScrollport(): HTMLElement {
+  const column = document.createElement('div')
+  column.dataset.conversationColumn = ''
+  column.getBoundingClientRect = () => rect(0, 900)
   const scrollport = document.createElement('div')
   scrollport.dataset.conversationScroll = ''
   scrollport.getBoundingClientRect = () => rect(100, 600)
-  document.body.append(scrollport)
+  column.append(scrollport)
+  document.body.append(column)
   return scrollport
 }
 
