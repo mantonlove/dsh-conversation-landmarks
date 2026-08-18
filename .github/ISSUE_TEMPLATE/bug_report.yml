@@ -1,0 +1,41 @@
+name: Bug report
+description: Report a problem with the landmark rail.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for reporting. The more detail you provide, the faster it can be fixed.
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened
+      description: Describe the bug and what you expected to happen instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Numbered steps that reliably trigger the issue.
+      placeholder: |
+        1. Open dsh web at ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Plugin version and DeepSeek Harness version.
+      placeholder: plugin v0.1.0 / DeepSeek Harness 0.1.0-rc.7
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Screenshots or terminal output
+      description: Paste any relevant screenshots, console errors, or terminal output.
+    validations:
+      required: false

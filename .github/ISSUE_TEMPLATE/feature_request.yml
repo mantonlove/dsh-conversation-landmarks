@@ -1,0 +1,29 @@
+name: Feature request
+description: Suggest an improvement to the landmark rail.
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for the suggestion.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem this solves
+      description: What need or problem does this address?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Describe the change you have in mind.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Any alternatives or workarounds you have already tried.
+    validations:
+      required: false

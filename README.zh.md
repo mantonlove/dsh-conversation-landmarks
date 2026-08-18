@@ -8,10 +8,11 @@
 
 ## 功能
 
-- 对话滚动时，完整线条组始终固定并上下居中。
-- 自动选中距离指针最近的横线。选中项最长且为纯白色，相邻两项为中等长度。
+- 对话滚动时，完整线条组始终固定并居中于整个对话栏。
+- 少于三条用户消息时不显示地标轨（从第三条横线才开始出现）。
+- 自动选中距离指针最近的横线。选中项最长且为纯白色，上下各两根逐级变短（28/20/16px），其余保持基础长度。
 - 悬浮时显示用户请求和随后最新一条 Assistant 回复的精简预览。
-- 目标不在当前历史窗口时自动加载更早记录，随后把对应用户消息对齐到对话视口顶部。
+- 目标不在当前历史窗口时自动加载更早记录，随后滚动到对应用户消息，并留出余量让高亮框完整显示。
 - 只使用官方 session projection 与 Client slot 扩展点，不修改 DeepSeek Harness 源码。
 - 插件自身不发起网络请求，也不收集遥测数据。
 
@@ -59,6 +60,10 @@ pnpm run check
 ```
 
 该包是一个 Cordis Service 插件。Host 端通过 `ctx.effect()` 注册 `conversationLandmarks` session projection；浏览器端通过 `conversation.input.dock` 挂载，再用 portal 渲染固定线条组。
+
+## 反馈
+
+遇到问题或有功能建议，请在 [Issues](https://github.com/mantonlove/dsh-conversation-landmarks/issues) 提交。提交前请先搜索是否已有相同问题。
 
 ## 项目状态
 

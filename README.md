@@ -8,10 +8,11 @@ Conversation Landmarks is an independent [DeepSeek Harness](https://github.com/d
 
 ## What it does
 
-- Keeps the complete landmark rail fixed and vertically centered while the conversation scrolls.
-- Selects the line nearest the pointer. The selected line becomes longest and pure white; its two neighbors expand to a middle length.
+- Keeps the complete landmark rail fixed and centered in the whole conversation column while it scrolls.
+- Hides the rail until at least three user tasks exist (it appears from the third line).
+- Selects the line nearest the pointer. The selected line becomes longest and pure white; the two lines on each side taper down (28/20/16px) to the resting length.
 - Shows a compact preview of the user request and the latest following Assistant answer.
-- Loads older history when necessary, then aligns the selected user message with the top of the conversation viewport.
+- Loads older history when necessary, then scrolls to the selected user message with clearance so the highlight outline stays fully visible.
 - Uses the official session projection and Client slot extension points. It does not patch DeepSeek Harness source files.
 - Performs no plugin-owned network requests and collects no telemetry.
 
@@ -59,6 +60,10 @@ pnpm run check
 ```
 
 The package is a Cordis Service plugin. Its Host half registers the `conversationLandmarks` session projection through `ctx.effect()`. Its browser half mounts through `conversation.input.dock`, then renders the fixed rail in a portal.
+
+## Feedback
+
+Report bugs or request features in [Issues](https://github.com/mantonlove/dsh-conversation-landmarks/issues). Please search existing issues before opening a new one.
 
 ## Status
 
